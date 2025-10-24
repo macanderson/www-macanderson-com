@@ -2,23 +2,6 @@
   "version": 2,
   "regions": ["sfo1"],
   "installCommand": "pnpm install --frozen-lockfile",
-  "buildCommand": "pnpm prisma generate && pnpm build",
-  "devCommand": "pnpm dev",
-  "functions": {
-    "api/**": {
-      "runtime": "nodejs@22.0.0",
-      "maxDuration": 60,
-      "memory": 1024
-    }
-  },
-  "headers": [
-    {
-      "source": "/(.*)",
-      "headers": [
-        { "key": "X-Frame-Options", "value": "SAMEORIGIN" },
-        { "key": "Referrer-Policy", "value": "strict-origin-when-cross-origin" },
-        { "key": "X-Content-Type-Options", "value": "nosniff" }
-      ]
-    }
-  ]
+  "buildCommand": "pnpm dlx prisma generate && pnpm build",
+  "devCommand": "pnpm dev"
 }
