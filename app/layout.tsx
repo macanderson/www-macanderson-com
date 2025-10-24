@@ -14,7 +14,7 @@ const spaceMono = V0_Font_Space_Mono({ subsets: ['latin'], weight: ["400", "700"
 export const metadata: Metadata = {
   title: "AI Me App | Mac Anderson",
   description: "Get to know Mac Anderson, a machine learning researcher, patented inventor, and award winning entrapraneur.",
-  generator: 'v0.app'
+  generator: 'macanderson.com'
 }
 
 export default function RootLayout({

@@ -10,9 +10,11 @@ export interface RAGContext {
 
 export async function retrieveContext(query: string, limit = 5): Promise<RAGContext[]> {
   try {
+    console.log("[v0] Retrieving context for query:", query)
     const chunks = await searchSimilarChunks(query, limit)
 
     const documentIds = [...new Set(chunks.map((c) => c.documentId))]
+    console.log("[v0] Document IDs:", documentIds)
     const documents = await prisma.document.findMany({
       where: {
         id: {
@@ -27,9 +29,10 @@ export async function retrieveContext(query: string, limit = 5): Promise<RAGCont
     })
 
     const documentMap = new Map(documents.map((d) => [d.id, d]))
-
+    console.log("[v0] Document Map:", documentMap)
     return chunks.map((chunk) => {
       const doc = documentMap.get(chunk.documentId)
+      console.log("[v0] Document:", doc)
       return {
         content: chunk.content,
         source: doc?.title || "Unknown",
@@ -51,7 +54,7 @@ export function formatContextForPrompt(contexts: RAGContext[]): string {
     return "No additional context available."
   }
 
-  return contexts
+  const formattedContexts = contexts
     .map(
       (ctx, idx) => `
 [Source ${idx + 1}: ${ctx.source} (Relevance: ${(ctx.similarity * 100).toFixed(1)}%)]
@@ -59,6 +62,8 @@ ${ctx.content}
 `,
     )
     .join("\n---\n")
+  console.log("[v0] Formatted contexts:", formattedContexts)
+  return formattedContexts
 }
 
 export async function generateRAGResponse(query: string, contexts: RAGContext[]): Promise<string> {
@@ -74,5 +79,6 @@ Use this context to answer the user's question accurately and conversationally. 
 
 Keep responses concise, engaging, and informative. Use a friendly, professional tone.`
 
+  console.log("[v0] System prompt:", systemPrompt)
   return systemPrompt
 }
