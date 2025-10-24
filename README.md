@@ -29,7 +29,7 @@ An intelligent, conversational resume powered by RAG (Retrieval Augmented Genera
 
 Create a `.env` file with the following:
 
-\`\`\`env
+```env
 # Database
 DATABASE_URL="your-neon-postgres-connection-string"
 
@@ -38,11 +38,11 @@ JWT_SECRET="your-secure-jwt-secret-key"
 
 # OpenAI (for embeddings)
 OPENAI_API_KEY="your-openai-api-key"
-\`\`\`
+```
 
 ### 2. Database Setup
 
-\`\`\`bash
+```bash
 # Install dependencies
 npm install
 
@@ -54,7 +54,7 @@ npx prisma db push
 
 # Run initialization script (creates admin user and default components)
 # Execute scripts/001-init-database.sql in your Neon dashboard
-\`\`\`
+```
 
 ### 3. Default Admin Credentials
 
@@ -65,11 +65,11 @@ npx prisma db push
 
 ### 4. Run Development Server
 
-\`\`\`bash
+```bash
 npm run dev
-\`\`\`
+```
 
-Visit `http://localhost:3000` to see the interactive resume.
+Visit `http://localhost:3000` to see the interactive resume. To login as an admin, use http://localhost:3000/admin/login. Make sure a user with a matching email and password is created in the database first.
 
 ## Admin Dashboard
 
@@ -80,6 +80,7 @@ Access the admin dashboard at `/admin/login` to:
 - Manage the knowledge base
 
 Uploaded documents are automatically:
+
 1. Parsed and extracted
 2. Chunked into manageable pieces
 3. Converted to vector embeddings
@@ -141,7 +142,7 @@ Suggestions are cached for 5 minutes to reduce API calls.
 
 ## Architecture
 
-\`\`\`
+```
 app/
 ├── api/
 │   ├── auth/          # Authentication endpoints
@@ -169,7 +170,7 @@ lib/
 ├── rag.ts             # RAG retrieval logic
 ├── intent-router.ts   # Intent detection system
 └── file-processor.ts  # Document parsing
-\`\`\`
+```
 
 ## Performance Optimizations
 
@@ -199,4 +200,4 @@ lib/
 ## License
 
 MIT
-\`\`\`
+```

@@ -6,7 +6,7 @@
   "devCommand": "pnpm dev",
   "functions": {
     "api/**": {
-      "runtime": "nodejs22.x",
+      "runtime": "nodejs@22.0.0",
       "maxDuration": 60,
       "memory": 1024
     }
