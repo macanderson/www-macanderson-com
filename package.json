@@ -26,7 +26,7 @@
   "private": true,
   "packageManager": "pnpm@10.19.0",
   "scripts": {
-    "build": "next build",
+    "build": "next build && pnpm dlx prisma generate",
     "dev": "next dev",
     "postinstall": "prisma generate",
     "lint": "eslint .",
