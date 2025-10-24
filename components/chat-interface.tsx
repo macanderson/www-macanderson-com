@@ -216,12 +216,15 @@ export function ChatInterface() {
       )}
 
       <div className="flex flex-col flex-1 gap-6 mb-6">
-        {(messages as any[]).map((message: any) => (
+        {(messages as any[]).map((message: any) => {
+          console.log("[debug] Rendering message:", message)
+          return (
           <div key={message.id} className="flex flex-col gap-2">
             {/* Render textual content if present */}
             {(() => {
               const text = extractText(message)
               const hasText = typeof text === "string" && text.trim().length > 0
+              console.log("[debug] Message text and hasText:", {text, hasText, message})
               if (!hasText) return null
 
               return (
@@ -255,11 +258,12 @@ export function ChatInterface() {
             })()}
 
             {/* Always render tool invocations if present */}
-            {message.toolInvocations?.map((toolInvocation: any, index: number) =>
-              renderToolComponent(toolInvocation, index)
-            )}
+            {message.toolInvocations?.map((toolInvocation: any, index: number) => {
+              console.log("[debug] toolInvocation in message:", toolInvocation, index)
+              return renderToolComponent(toolInvocation, index)
+            })}
           </div>
-        ))}
+        )})}
 
         {groupTimestamp && (
           <div className="mx-auto mb-2 text-xs text-muted-foreground">
@@ -290,7 +294,9 @@ export function ChatInterface() {
       <div className="sticky bottom-0 -mx-4 bg-background/95 backdrop-blur">
         {suggestions.length > 0 && messages.length === 0 && (
           <div className="grid grid-cols-1 gap-3 px-4 pb-4 sm:grid-cols-2">
-            {suggestions.map((suggestion, index) => (
+            {suggestions.map((suggestion, index) => {
+              console.log("[debug] Rendering suggestion button:", suggestion, index)
+              return (
               <button
                 key={index}
                 onClick={() => handleSuggestionClick(suggestion)}
@@ -305,7 +311,7 @@ export function ChatInterface() {
                   <div className="absolute inset-0 bg-gradient-to-r from-primary/10 via-primary/5 to-transparent" />
                 </div>
               </button>
-            ))}
+            )})}
           </div>
         )}
 
@@ -313,7 +319,10 @@ export function ChatInterface() {
           <Textarea
             name="message"
             value={inputValue}
-            onChange={(e) => setInputValue(e.target.value)}
+            onChange={(e) => {
+              setInputValue(e.target.value)
+              console.log("[debug] inputValue changed:", e.target.value)
+            }}
             onKeyDown={handleKeyDown}
             placeholder="Ask me anything about Mac..."
             className="min-h-[60px] max-h-[200px] resize-none"

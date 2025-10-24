@@ -11,6 +11,8 @@ export async function POST(req: Request) {
       where: { email },
     })
 
+    console.log("[v0] User:", user)
+
     if (!user) {
       return NextResponse.json({ error: "Invalid credentials" }, { status: 401 })
     }

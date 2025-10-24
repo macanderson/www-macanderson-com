@@ -6,20 +6,23 @@ export async function processFile(file: File): Promise<string> {
   }
 
   if (fileType === "pdf") {
-    // Dynamic import for pdf-parse to handle CommonJS module
-    const pdfParse = (await import("pdf-parse")).default
+    // Dynamic import with interop for pdf-parse (CJS/ESM compatibility)
+    const pdfParseModule = await import("pdf-parse")
+    const pdfParse =
+      (pdfParseModule as any).default ?? (pdfParseModule as any)
     const arrayBuffer = await file.arrayBuffer()
     const buffer = Buffer.from(arrayBuffer)
-    const data = await pdfParse(buffer)
+    const data = await (pdfParse as (buffer: Buffer) => Promise<{ text: string }>)(buffer)
     return data.text
   }
 
   if (fileType === "doc" || fileType === "docx") {
-    // Dynamic import for mammoth to handle CommonJS module
-    const mammoth = (await import("mammoth")).default
+    // Dynamic import with interop for mammoth (CJS/ESM compatibility)
+    const mammothModule = await import("mammoth")
+    const mammoth = (mammothModule as any).default ?? (mammothModule as any)
     const arrayBuffer = await file.arrayBuffer()
     const buffer = Buffer.from(arrayBuffer)
-    const result = await mammoth.extractRawText({ buffer })
+    const result = await (mammoth as any).extractRawText({ buffer })
     return result.value
   }
 
