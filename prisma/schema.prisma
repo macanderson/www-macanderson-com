@@ -1,61 +1,83 @@
 generator client {
-  provider        = "prisma-client-js"
-  previewFeatures = ["postgresqlExtensions"]
+  provider = "prisma-client-js"
+  output   = "prisma/generated"
 }
 
 datasource db {
-  provider   = "postgresql"
-  url        = env("DB_URL")
-  extensions = [vector]
+  provider = "postgresql"
+  url      = env("DB_URL")
+  schemas  = ["public"]
 }
 
 model User {
-  id        String   @id @default(cuid())
-  email     String   @unique
-  password  String
-  role      String   @default("user")
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id             String   @id @default(cuid())
+  email          String   @unique
+  isSuperUser    Boolean  @default(false)
+  hashedPassword String?
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+  accounts       UserAccount[]
+  sessions       UserSession[]
+
+  @@schema("public")
 }
 
-model Document {
-  id         String          @id @default(cuid())
-  title      String
-  content    String
-  fileType   String
-  fileName   String
-  fileSize   Int
-  uploadedBy String
-  createdAt  DateTime        @default(now())
-  updatedAt  DateTime        @updatedAt
-  chunks     DocumentChunk[]
+model Account {
+  id      String         @id @default(cuid())
+  name    String
+  users   UserAccount[]
+  credits CreditTransaction[]
 
-  @@index([createdAt])
+  @@schema("public")
 }
 
-model DocumentChunk {
-  id         String                 @id @default(cuid())
-  documentId String
-  content    String
-  embedding  Unsupported("vector")?
-  metadata   Json?
-  createdAt  DateTime               @default(now())
-  document   Document               @relation(fields: [documentId], references: [id], onDelete: Cascade)
+model UserAccount {
+  id        String  @id @default(cuid())
+  userId    String
+  accountId String
 
-  @@index([documentId])
+  user      User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  account   Account @relation(fields: [accountId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, accountId])
+  @@index([accountId])
+  @@schema("public")
 }
 
-model ComponentRegistry {
-  id            String   @id @default(cuid())
-  name          String   @unique
-  displayName   String
-  description   String
-  intent        String[]
-  componentPath String
-  isActive      Boolean  @default(true)
-  priority      Int      @default(0)
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
+model UserSession {
+  id           String   @id @default(cuid())
+  userId       String
+  sessionToken String   @unique
+  expiresAt    DateTime
 
-  @@index([isActive])
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([expiresAt])
+  @@schema("public")
+}
+
+model CreditTransaction {
+  id        String  @id @default(cuid())
+  accountId String
+  amount    Float
+
+  account   Account @relation(fields: [accountId], references: [id], onDelete: Cascade)
+  @@index([accountId])
+  @@schema("public")
+}
+
+enum AuthProvider {
+  email_password
+  google
+  github
+
+  @@schema("public")
+}
+
+enum NotifMethod {
+  email
+  sms
+
+  @@schema("public")
 }

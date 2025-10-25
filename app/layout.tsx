@@ -2,7 +2,6 @@ import type React from "react"
 import type { Metadata } from "next"
 import { Analytics } from "@vercel/analytics/next"
 import { ThemeProvider } from "@/components/theme-provider"
-import { SettingsProvider } from "@/components/settings-provider"
 import "./globals.css"
 
 import { Mulish as V0_Font_Mulish, Space_Mono as V0_Font_Space_Mono } from 'next/font/google'
@@ -26,10 +25,10 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning className={`${mulish.className} ${spaceMono.className}`}>
       <body className="font-sans antialiased">
         <ThemeProvider>
-          <SettingsProvider>{children}</SettingsProvider>
+          {children}
+          <Analytics />
         </ThemeProvider>
-        <Analytics />
       </body>
     </html>
-  )
+  );
 }

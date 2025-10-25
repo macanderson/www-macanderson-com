@@ -1,5 +1,51 @@
 # Mac Anderson - Interactive AI Resume
 
+
+```bash
+
+# run the following commands to start the development server
+
+cp .env.example .env
+# then update env vars with DATABASE_URL, JWT_SECRET, OPENAI_API_KEY, and AI_GATEWAY_API_KEY (Vercel AI Gateway API Key)
+pnpm install
+
+# Build the project ensure no errors are thrown
+pnpm build
+
+# Run the migrations and seed the database
+pnpx prisma migrate dev
+
+# Generate the Prisma client
+pnpx prisma generate
+
+# Seed the database
+pnpx prisma db seed
+
+# Start the development server
+pnpm dev
+
+# or if production ready, run:
+pnpm start
+
+# Local Environment URLs
+site_url: localhost:3000
+customer_signup_url: localhost:3000/signup
+customer_login_url: localhost:3000/login
+contact_page: localhost:3000/contact
+privacy_page: localhost:3000/privacy-policy
+service_terms_page: localhost:3000/terms-of-service
+other_disclosures_page: localhost:3000/data-disclosure
+security_trust_page: localhost:3000/security
+system_status_page: localhost:3000/system-status
+
+# login with test user credentials
+admin_login: admin@macanderson.com
+admin_password: admin123
+backend_login_url: localhost:3000/admin/login
+backend_url: localhost:3000/admin/dashboard
+prisma_db_url: localhost:5432
+```
+
 An intelligent, conversational resume powered by RAG (Retrieval Augmented Generation) and dynamic React Server Components.
 
 ## Features

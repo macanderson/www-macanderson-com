@@ -1,16 +1,14 @@
 "use client"
 
-import { Moon, Sun, Settings, Menu } from "lucide-react"
+import { Moon, Sun, Menu } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { useTheme } from "@/components/theme-provider"
 import { useState } from "react"
-import { SettingsDrawer } from "@/components/settings-drawer"
 import { useMobile } from "@/hooks/use-mobile"
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
 
 export function Header() {
   const { theme, toggleTheme } = useTheme()
-  const [settingsOpen, setSettingsOpen] = useState(false)
   const isMobile = useMobile()
 
   return (
@@ -48,10 +46,6 @@ export function Header() {
                         </>
                       )}
                     </Button>
-                    <Button variant="outline" onClick={() => setSettingsOpen(true)} className="justify-start w-full">
-                      <Settings className="w-4 h-4 mr-2" />
-                      Settings
-                    </Button>
                   </div>
                 </SheetContent>
               </Sheet>
@@ -60,16 +54,12 @@ export function Header() {
                 <Button variant="ghost" size="icon" onClick={toggleTheme}>
                   {theme === "dark" ? <Sun className="w-5 h-5 text-primary" /> : <Moon className="w-5 h-5" />}
                 </Button>
-                <Button variant="ghost" size="icon" onClick={() => setSettingsOpen(true)}>
-                  <Settings className="w-5 h-5" />
-                </Button>
               </>
             )}
           </div>
         </div>
       </header>
 
-      <SettingsDrawer open={settingsOpen} onOpenChangeAction={setSettingsOpen} />
     </>
   )
 }

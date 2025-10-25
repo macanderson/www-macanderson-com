@@ -1,0 +1,84 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "prisma/generated"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DB_URL")
+  schemas  = ["public"]
+}
+
+model User {
+  id             String        @id @default(cuid())
+  email          String        @unique
+  isSuperUser    Boolean       @default(false)
+  hashedPassword String?
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
+  accounts       UserAccount[]
+  sessions       UserSession[]
+
+  @@schema("public")
+}
+
+model Account {
+  id      String              @id @default(cuid())
+  name    String
+  users   UserAccount[]
+  credits CreditTransaction[]
+
+  @@schema("public")
+}
+
+model UserAccount {
+  id        String @id @default(cuid())
+  userId    String
+  accountId String
+
+  user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  account Account @relation(fields: [accountId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, accountId])
+  @@index([accountId])
+  @@schema("public")
+}
+
+model UserSession {
+  id           String   @id @default(cuid())
+  userId       String
+  sessionToken String   @unique
+  expiresAt    DateTime
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([expiresAt])
+  @@schema("public")
+}
+
+model CreditTransaction {
+  id        String @id @default(cuid())
+  accountId String
+  amount    Float
+
+  account Account @relation(fields: [accountId], references: [id], onDelete: Cascade)
+
+  @@index([accountId])
+  @@schema("public")
+}
+
+enum AuthProvider {
+  email_password
+  google
+  github
+
+  @@schema("public")
+}
+
+enum NotifMethod {
+  email
+  sms
+
+  @@schema("public")
+}

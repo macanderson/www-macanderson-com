@@ -112,7 +112,7 @@ curl -X POST \
 
 ## Add a New Component End‑to‑End (Example: Shopping List)
 
-1) Create the React component:
+1.) Create the React component:
 
 ```tsx
 // components/shopping-list.tsx
@@ -143,7 +143,7 @@ export function ShoppingList({ items, intro, llmText }: Props) {
 }
 ```
 
-2) Add a server tool:
+2.) Add a server tool:
 
 ```ts
 // app/api/chat/route.ts (tools section)
@@ -159,7 +159,7 @@ showShoppingList: tool({
 }),
 ```
 
-3) Teach the model the tool exists (system prompt AVAILABLE TOOLS block in `app/api/chat/route.ts`):
+3.) Teach the model the tool exists (system prompt AVAILABLE TOOLS block in `app/api/chat/route.ts`):
 
 ```
 - showShoppingList: Displays a shopping list UI
@@ -176,7 +176,7 @@ if (toolName === "showShoppingList") {
 }
 ```
 
-5) Register the intent (optional but recommended for detection):
+5.) Register the intent (optional but recommended for detection):
 
 ```bash
 curl -X POST -H "Content-Type: application/json" -d '{
@@ -263,7 +263,3 @@ if (Component) {
   - Remove or disable the server tool and its mention in AVAILABLE TOOLS.
   - Remove the client mapping branch.
   - Deactivate the registry entry (`isActive: false`).
-
----
-
-By following the above steps, you can reliably render custom UI components driven by tool calls, pass in LLM narrative text, and manage intents through the registry. This keeps the UX consistent: brief assistant guidance text followed by an interactive component that users can explore.
