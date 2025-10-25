@@ -71,29 +71,37 @@ export async function addDocumentToVectorStore(documentId: string, content: stri
 }
 
 export async function searchSimilarChunks(query: string, limit = 5) {
-  const queryEmbedding = await generateEmbedding(query)
+  try {
+    if (!query || !query.trim()) {
+      return []
+    }
 
-  const queryVector = toPgVectorLiteral(queryEmbedding)
+    const queryEmbedding = await generateEmbedding(query)
+    const queryVector = toPgVectorLiteral(queryEmbedding)
 
-  const results = await prisma.$queryRaw<
-    Array<{
-      id: string
-      content: string
-      documentId: string
-      metadata: any
-      similarity: number
-    }>
-  >`
-    SELECT
-      dc.id,
-      dc.content,
-      dc."documentId",
-      dc.metadata,
-      1 - (dc.embedding <=> ${queryVector}::vector) as similarity
-    FROM "DocumentChunk" dc
-    ORDER BY dc.embedding <=> ${queryVector}::vector
-    LIMIT ${limit}
-  `
+    const results = await prisma.$queryRaw<
+      Array<{
+        id: string
+        content: string
+        documentId: string
+        metadata: any
+        similarity: number
+      }>
+    >`
+      SELECT
+        dc.id,
+        dc.content,
+        dc."documentId",
+        dc.metadata,
+        1 - (dc.embedding <=> ${queryVector}::vector) as similarity
+      FROM "DocumentChunk" dc
+      ORDER BY dc.embedding <=> ${queryVector}::vector
+      LIMIT ${limit}
+    `
 
-  return results
+    return Array.isArray(results) ? results : []
+  } catch (error) {
+    console.error("[v0] Error searching similar chunks:", error)
+    return []
+  }
 }

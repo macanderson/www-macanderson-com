@@ -13,6 +13,11 @@ export async function retrieveContext(query: string, limit = 5): Promise<RAGCont
     console.log("[v0] Retrieving context for query:", query)
     const chunks = await searchSimilarChunks(query, limit)
 
+    if (!Array.isArray(chunks) || chunks.length === 0) {
+      console.log("[v0] No document chunks found for query. Returning empty context.")
+      return []
+    }
+
     const documentIds = [...new Set(chunks.map((c) => c.documentId))]
     console.log("[v0] Document IDs:", documentIds)
     const documents = await prisma.document.findMany({
